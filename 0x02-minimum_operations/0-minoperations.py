@@ -6,12 +6,13 @@ This function calculates the minimum number of operations needed to
 achieve exactly 'n' characters in the file, starting with 1 character.
 """
 
+
 def minOperations(n):
     """
     Calculates the fewest number of operations needed
     to achieve exactly 'target_characters'
     characters in the file, starting with 1 character.
-    
+
     Args:
     - target_characters (int): The desired number of characters.
 
