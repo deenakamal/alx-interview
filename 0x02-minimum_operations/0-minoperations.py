@@ -6,8 +6,7 @@ This function calculates the minimum number of operations needed to
 achieve exactly 'n' characters in the file, starting with 1 character.
 """
 
-
-def min_operations(target_characters):
+def minOperations(n):
     """
     Calculates the fewest number of operations needed
     to achieve exactly 'target_characters'
@@ -19,15 +18,15 @@ def min_operations(target_characters):
     Returns:
     - int: The minimum number of operations required.
     """
-    if target_characters <= 1:
+    if n <= 1:
         return 0
 
     operations_count = 0
     copied_characters = 0
     current_characters = 1
 
-    while current_characters < target_characters:
-        if target_characters % current_characters == 0:
+    while current_characters < n:
+        if n % current_characters == 0:
             operations_count += 1
             copied_characters = current_characters
 
