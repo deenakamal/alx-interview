@@ -1,47 +1,31 @@
 #!/usr/bin/python3
-"""Reads stdin line by line and computes HTTP log metrics."""
+"""reads stdin,compute metrics"""
 import re
 
 
-def parse_log_entry(entry):
-    """
-    Extract relevant information from a single log entry.
-
-    Args:
-        entry (str): A line from the HTTP log input.
-
-    Returns:
-        dict: Contains 'response_code' and 'response_size'.
-    """
-    parts = entry.split(' ')
+def get_input(lines):
+    """gets target info from input."""
+    line = lines.split(' ')
     return {
-        'response_code': parts[-2],
-        'response_size': int(parts[-1]),
+        'status_code': line[-2],
+        'file_size': int(line[-1]),
     }
 
 
-def display_summary(total_size, response_counts):
-    """
-    Display accumulated statistics of HTTP log entries.
-
-    Args:
-        total_size (int): Total accumulated size of responses.
-        response_counts (dict): Dictionary of counts for each status code.
-    """
-    print(f'Total size: {total_size}', flush=True)
-    for code in sorted(response_counts.keys()):
-        count = response_counts.get(code, 0)
-        if count > 0:
-            print(f'{code}: {count}', flush=True)
+def print_stats(file_size_sum, status_codes_stats):
+    """Print acumulated statistics of HTTP log"""
+    print('File size: {:d}'.format(file_size_sum), flush=True)
+    for status_code in sorted(status_codes_stats.keys()):
+        n = status_codes_stats.get(status_code, 0)
+        if n > 0:
+            print('{:s}: {:d}'.format(status_code, n), flush=True)
 
 
-def process_logs():
-    """
-    Continuously read and process log entries from stdin.
-    """
-    entry_count = 0
-    total_size = 0
-    response_counts = {
+def run():
+    """run input parser"""
+    line_n = 0
+    file_size_sum = 0
+    status_codes_stats = {
         '200': 0,
         '301': 0,
         '400': 0,
@@ -51,21 +35,20 @@ def process_logs():
         '405': 0,
         '500': 0,
     }
-
     try:
         while True:
-            log_entry = input()
-            entry_data = parse_log_entry(log_entry)
-            response_code = entry_data.get('response_code', '0')
-            if response_code in response_counts:
-                response_counts[response_code] += 1
-            total_size += entry_data['response_size']
-            entry_count += 1
-            if entry_count % 10 == 0:
-                display_summary(total_size, response_counts)
+            line = input()
+            line_info = get_input(line)
+            code = line_info.get('status_code', '0')
+            if code in status_codes_stats.keys():
+                status_codes_stats[code] += 1
+            file_size_sum += line_info['file_size']
+            line_n += 1
+            if line_n % 10 == 0:
+                print_stats(file_size_sum, status_codes_stats)
     except (KeyboardInterrupt, EOFError, SystemExit):
-        display_summary(total_size, response_counts)
+        print_stats(file_size_sum, status_codes_stats)
 
 
 if __name__ == '__main__':
-    process_logs()
+    run()
