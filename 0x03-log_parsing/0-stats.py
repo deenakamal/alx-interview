@@ -5,6 +5,7 @@
 
 import sys
 
+
 def print_log_summary(status_counts: dict, total_size: int) -> None:
     """
     Prints the accumulated statistics of HTTP log entries.
@@ -17,6 +18,7 @@ def print_log_summary(status_counts: dict, total_size: int) -> None:
     for status_code, count in sorted(status_counts.items()):
         if count:
             print(f"{status_code}: {count}")
+
 
 def process_log_entries() -> None:
     """
@@ -56,6 +58,6 @@ def process_log_entries() -> None:
         print_log_summary(status_code_counts, total_file_size)
         raise
 
+
 if __name__ == "__main__":
     process_log_entries()
-
