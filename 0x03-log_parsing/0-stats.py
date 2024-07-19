@@ -1,38 +1,61 @@
 #!/usr/bin/python3
 """
-    script that reads stdin line by line and computes metrics
+    Script that reads stdin line by line and computes metrics
 """
 
 import sys
 
-if __name__ == "__main__":
-    filesize, count = 0, 0
-    codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
-    stats = {k: 0 for k in codes}
+def print_log_summary(status_counts: dict, total_size: int) -> None:
+    """
+    Prints the accumulated statistics of HTTP log entries.
 
-    def print_stats(stats: dict, file_size: int) -> None:
-        print("File size: {:d}".format(filesize))
-        for k, v in sorted(stats.items()):
-            if v:
-                print("{}: {}".format(k, v))
+    Args:
+        status_counts (dict): Dictionary of counts for each status code.
+        total_size (int): Total accumulated size of responses.
+    """
+    print("File size: {:d}".format(total_size))
+    for status_code, count in sorted(status_counts.items()):
+        if count:
+            print(f"{status_code}: {count}")
+
+def process_log_entries() -> None:
+    """
+    Continuously reads and processes log entries from stdin.
+    """
+    entry_count = 0
+    total_file_size = 0
+    status_code_counts = {
+        "200": 0,
+        "301": 0,
+        "400": 0,
+        "401": 0,
+        "403": 0,
+        "404": 0,
+        "405": 0,
+        "500": 0
+    }
 
     try:
         for line in sys.stdin:
-            count += 1
-            data = line.split()
+            entry_count += 1
+            parts = line.split()
             try:
-                status_code = data[-2]
-                if status_code in stats:
-                    stats[status_code] += 1
-            except BaseException:
+                code = parts[-2]
+                if code in status_code_counts:
+                    status_code_counts[code] += 1
+            except IndexError:
                 pass
             try:
-                filesize += int(data[-1])
-            except BaseException:
+                total_file_size += int(parts[-1])
+            except (IndexError, ValueError):
                 pass
-            if count % 10 == 0:
-                print_stats(stats, filesize)
-        print_stats(stats, filesize)
+            if entry_count % 10 == 0:
+                print_log_summary(status_code_counts, total_file_size)
+        print_log_summary(status_code_counts, total_file_size)
     except KeyboardInterrupt:
-        print_stats(stats, filesize)
+        print_log_summary(status_code_counts, total_file_size)
         raise
+
+if __name__ == "__main__":
+    process_log_entries()
+
