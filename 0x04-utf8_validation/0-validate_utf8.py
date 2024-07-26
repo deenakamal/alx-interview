@@ -8,7 +8,8 @@ def validUTF8(data):
     """
     Check if the given list of integers represents a valid UTF-8 encoding.
 
-    Each integer in the list represents a byte (0 to 255). The function verifies
+    Each integer in the list represents a byte (0 to 255).
+    The function verifies
     if these bytes form a valid UTF-8 encoded sequence, where UTF-8 characters
     can be 1 to 4 bytes long.
 
