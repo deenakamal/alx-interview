@@ -1,22 +1,22 @@
 #!/usr/bin/python3
-""" Prime Game Module """
+"""Prime Game Module"""
 
 
 def isWinner(x, nums):
-    """The function returns the name of the player who wins"""
-    maria_wins, ben_wins = 0, 0
+    """Determine the winner of the prime game."""
+    if x < 1 or not nums:
+        return None
+
+    max_n = max(nums)
+    primes = prime_sieve(max_n)
+    maria_wins = 0
+    ben_wins = 0
 
     for n in nums:
-        primes = prime_sieve(n)
-        if not primes:
-            ben_wins += 1  # If no primes, Ben wins
-            continue
-
-        # Simulate game logic here based on primes
-        if len(primes) % 2 == 0:
-            maria_wins += 1
-        else:
+        if sum(primes[0:n+1]) % 2 == 0:
             ben_wins += 1
+        else:
+            maria_wins += 1
 
     if maria_wins > ben_wins:
         return "Maria"
@@ -27,14 +27,13 @@ def isWinner(x, nums):
 
 
 def prime_sieve(n):
-    """Returns a list of prime numbers up to n."""
-    is_prime = [True] * (n + 1)
+    """Returns a list where index i is True if i is a prime number."""
+    sieve = [True] * (n + 1)
+    sieve[0], sieve[1] = False, False
     p = 2
     while (p * p <= n):
-        if is_prime[p]:  # Simplified the boolean comparison
+        if sieve[p]:
             for i in range(p * p, n + 1, p):
-                is_prime[i] = False
+                sieve[i] = False
         p += 1
-    is_prime[0], is_prime[1] = False, False
-    primes = [p for p in range(n + 1) if is_prime[p]]
-    return primes
+    return sieve
