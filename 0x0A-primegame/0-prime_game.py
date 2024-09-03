@@ -3,7 +3,7 @@
 
 
 def isWinner(x, nums):
-    """The function returns the name of the player who win """
+    """The function returns the name of the player who wins"""
     maria_wins, ben_wins = 0, 0
 
     for n in nums:
@@ -31,7 +31,7 @@ def prime_sieve(n):
     is_prime = [True] * (n + 1)
     p = 2
     while (p * p <= n):
-        if (is_prime[p] == True):
+        if is_prime[p]:  # Simplified the boolean comparison
             for i in range(p * p, n + 1, p):
                 is_prime[i] = False
         p += 1
